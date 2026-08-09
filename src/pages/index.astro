@@ -1,0 +1,32 @@
+---
+import { getCollection } from 'astro:content';
+import Release from '../components/Release.astro';
+import Base from '../layouts/Base.astro';
+
+const releases = (await getCollection('releases', ({ data }) => data.product === 'web'))
+  .map(({ data }) => ({
+    ...data,
+    entries: data.entries.filter((entry) => entry.audience === 'doctor'),
+  }))
+  .filter((release) => release.entries.length > 0)
+  .sort((a, b) => b.date.getTime() - a.date.getTime());
+---
+
+<Base
+  title="DiagDent – co nowego?"
+  description="Historia zmian systemu DiagDent dla lekarzy"
+>
+  <header class="site">
+    <h1>Co nowego w systemie DiagDent?</h1>
+    <p>Najważniejsze zmiany widoczne dla lekarzy.</p>
+  </header>
+  {
+    releases.map((release) => (
+      <Release
+        version={release.version}
+        date={release.date}
+        entries={release.entries}
+      />
+    ))
+  }
+</Base>

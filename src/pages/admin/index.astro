@@ -1,0 +1,58 @@
+---
+import { getCollection } from 'astro:content';
+import Release from '../../components/Release.astro';
+import Base from '../../layouts/Base.astro';
+
+const byDateDesc = (
+  a: { date: Date },
+  b: { date: Date },
+) => b.date.getTime() - a.date.getTime();
+
+const all = (await getCollection('releases')).map(({ data }) => data);
+const web = all.filter((r) => r.product === 'web').sort(byDateDesc);
+const consentApp = all
+  .filter((r) => r.product === 'consent-app')
+  .sort(byDateDesc);
+---
+
+<Base
+  title="DiagDent – historia zmian (administracja)"
+  description="Pełna historia zmian systemu DiagDent"
+>
+  <header class="site">
+    <h1>Historia zmian – widok administracyjny</h1>
+    <p>
+      Wszystkie opublikowane zmiany. Wpisy oznaczone
+      <span class="badge">admin</span> nie są pokazywane lekarzom.
+      <a href="/rss.xml">RSS</a>
+    </p>
+  </header>
+  <section class="product">
+    <h2>System DiagDent</h2>
+    {
+      web.map((release) => (
+        <Release
+          version={release.version}
+          date={release.date}
+          entries={release.entries}
+          showAudience
+        />
+      ))
+    }
+  </section>
+  {
+    consentApp.length > 0 && (
+      <section class="product">
+        <h2>Aplikacja do zgód</h2>
+        {consentApp.map((release) => (
+          <Release
+            version={release.version}
+            date={release.date}
+            entries={release.entries}
+            showAudience
+          />
+        ))}
+      </section>
+    )
+  }
+</Base>

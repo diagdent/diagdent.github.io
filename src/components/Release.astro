@@ -1,0 +1,39 @@
+---
+interface Entry {
+  text: string;
+  audience: 'doctor' | 'admin';
+}
+interface Props {
+  version: string;
+  date: Date;
+  entries: Entry[];
+  /** Show per-entry audience badges (admin page only). */
+  showAudience?: boolean;
+}
+const { version, date, entries, showAudience = false } = Astro.props;
+const formatted = new Intl.DateTimeFormat('pl-PL', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+}).format(date);
+const anchor = `v${version.replaceAll('.', '-')}`;
+---
+
+<article class="release" id={anchor}>
+  <header>
+    <h2><a href={`#${anchor}`}>Wersja {version}</a></h2>
+    <time datetime={date.toISOString().slice(0, 10)}>{formatted}</time>
+  </header>
+  <ul class="entries">
+    {
+      entries.map((entry) => (
+        <li>
+          {entry.text}
+          {showAudience && entry.audience === 'admin' && (
+            <span class="badge">admin</span>
+          )}
+        </li>
+      ))
+    }
+  </ul>
+</article>
