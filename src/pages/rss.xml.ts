@@ -2,7 +2,7 @@ import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
 
 const PRODUCT_NAMES: Record<string, string> = {
-  web: 'System DiagDent',
+  web: 'Portal Lekarza',
   'consent-app': 'Aplikacja do zgód',
 };
 
