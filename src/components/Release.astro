@@ -1,7 +1,15 @@
 ---
+interface Media {
+  type: 'image' | 'clip';
+  src: string;
+  poster?: string;
+  alt?: string;
+}
 interface Entry {
   text: string;
   audience: 'doctor' | 'admin';
+  media?: Media;
+  spotlight?: { route: string; anchor: string };
 }
 interface Props {
   version: string;
@@ -17,6 +25,12 @@ const formatted = new Intl.DateTimeFormat('pl-PL', {
   year: 'numeric',
 }).format(date);
 const anchor = `v${version.replaceAll('.', '-')}`;
+const clipMime = (src: string) =>
+  src.endsWith('.webm')
+    ? 'video/webm'
+    : src.endsWith('.mp4')
+      ? 'video/mp4'
+      : undefined;
 ---
 
 <article class="release" id={anchor}>
@@ -31,6 +45,28 @@ const anchor = `v${version.replaceAll('.', '-')}`;
           {entry.text}
           {showAudience && entry.audience === 'admin' && (
             <span class="badge">admin</span>
+          )}
+          {entry.media?.type === 'image' && (
+            <img
+              class="release-media"
+              src={entry.media.src}
+              alt={entry.media.alt ?? ''}
+              loading="lazy"
+              decoding="async"
+            />
+          )}
+          {entry.media?.type === 'clip' && (
+            <video
+              class="release-clip release-media"
+              muted
+              loop
+              playsinline
+              preload="none"
+              poster={entry.media.poster}
+              data-autoplay
+            >
+              <source src={entry.media.src} type={clipMime(entry.media.src)} />
+            </video>
           )}
         </li>
       ))
