@@ -51,7 +51,7 @@ Per-entry optional fields:
   highlight the released feature; not rendered on this site.
 
 `internal` changes are never committed here — this repo is public; classification
-happens during release review (see the `release-changelog` skill in the diagdent
+happens during release review (see the `production-release` skill in the diagdent
 workspace and ADR 0002 in `namimed-api`).
 
 Web releases are written by the Release Skill; consent-app releases by its
