@@ -1,4 +1,5 @@
 import type { CollectionEntry } from 'astro:content';
+import { newestFirst } from '../../newestFirst';
 
 type Release = CollectionEntry<'releases'>['data'];
 type Entry = Release['entries'][number];
@@ -28,7 +29,7 @@ export const feedResponse = (releases: Release[], site: URL | undefined) => {
   const feed = {
     generated: new Date().toISOString(),
     releases: releases
-      .sort((a, b) => b.date.getTime() - a.date.getTime())
+      .sort(newestFirst)
       .slice(0, 20)
       .map((release) => ({
         product: release.product,

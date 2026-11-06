@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import Release from '../components/Release.astro';
 import Base from '../layouts/Base.astro';
+import { newestFirst } from '../newestFirst';
 
 const releases = (await getCollection('releases', ({ data }) => data.product === 'web'))
   .map(({ data }) => ({
@@ -9,7 +10,7 @@ const releases = (await getCollection('releases', ({ data }) => data.product ===
     entries: data.entries.filter((entry) => entry.audience === 'doctor'),
   }))
   .filter((release) => release.entries.length > 0)
-  .sort((a, b) => b.date.getTime() - a.date.getTime());
+  .sort(newestFirst);
 ---
 
 <Base

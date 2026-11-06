@@ -2,17 +2,14 @@
 import { getCollection } from 'astro:content';
 import Release from '../../components/Release.astro';
 import Base from '../../layouts/Base.astro';
+import { newestFirst } from '../../newestFirst';
 
-const byDateDesc = (
-  a: { date: Date },
-  b: { date: Date },
-) => b.date.getTime() - a.date.getTime();
 
 const all = (await getCollection('releases')).map(({ data }) => data);
-const web = all.filter((r) => r.product === 'web').sort(byDateDesc);
+const web = all.filter((r) => r.product === 'web').sort(newestFirst);
 const consentApp = all
   .filter((r) => r.product === 'consent-app')
-  .sort(byDateDesc);
+  .sort(newestFirst);
 ---
 
 <Base

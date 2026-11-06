@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
+import { newestFirst } from '../newestFirst';
 
 const PRODUCT_NAMES: Record<string, string> = {
   web: 'Portal Lekarza',
@@ -16,7 +17,7 @@ const escapeXml = (value: string) =>
 export const GET: APIRoute = async ({ site }) => {
   const releases = (await getCollection('releases'))
     .map(({ data }) => data)
-    .sort((a, b) => b.date.getTime() - a.date.getTime());
+    .sort(newestFirst);
 
   const items = releases
     .map((release) => {
